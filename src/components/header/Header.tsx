@@ -1,29 +1,45 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import MobileNavbar from './MobileNavbar';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { toggleOn } from '../../store/actions';
+import gsap from 'gsap/all';
 
 const Header : React.FC = () => {
 
-    const menuToggle = useSelector((state: RootState)=> state.menuToggle.toggle);
-    const dispatch = useDispatch();
+    const [menuToggle, setMenuToggle] = useState(false);
+    const tl = useMemo(() => gsap.timeline({paused: true}),[]);
+
     const openMenu = () => {
-        dispatch(toggleOn());
+        setMenuToggle((menuToggle) => !menuToggle);
+        tl.to(".menu-bar-1", {rotation: 45, margin:0, backgroundColor: "black", duration:0.3});
+        tl.to(".menu-bar-2", {rotation: -45, margin: 0, width: "2rem", backgroundColor: "black", duration:0.3},"<");
+        tl.play();
+    }
+
+    const closeMenu = () => {
+        tl.reverse();
+        gsap.timeline()
+        .to(".nav-link", {opacity:0, x:"-100%",stagger:0.1, duration:0.2})
+        .to(".mobile-nav", {x:"-100%", duration: 0.5, onComplete: toggle})  
+    }
+
+    const toggle = () => {
+        setMenuToggle((menuToggle) => !menuToggle);
+    }
+
+    const menuMouseHover = () => {
+        gsap.to(".nav-link-1", {color: "blue"})
     }
 
     return (
-        <div>
-            { menuToggle && (
-                <MobileNavbar />
+        <div className = "relative">
+            {menuToggle && (
+                <MobileNavbar/>
             )}
-            <div className = "">
-            <button className = "w-8 h-8 ml-3 mt-3 sm:hidden" onClick = {openMenu} ><img src="/assets/icons/menu-icon.svg" alt=""/></button>
-                {/* {
-                    menuLink.map((items) => (
-                        <a key = {items.name} href = {items.link} className = "text-black">{items.name}</a>
-                    ))
-                } */}
+            <div className = "flex h-20 sticky z-40">
+                <button className = " ml-5 my-auto h-8 w-12" onClick = {menuToggle ? closeMenu : openMenu} >
+                    <span className = "w-8 h-0.5 bg-black menu-bar-1 block"></span>
+                    <span className = "w-12 h-0.5 mt-4 bg-black menu-bar-2 block"></span>
+                </button>
+                <img src="/assets/programming.png" className = "my-auto ml-auto mr-5 w-20 h-16" alt="" />
             </div>
         </div>          
     );

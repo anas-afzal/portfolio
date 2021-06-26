@@ -27,7 +27,17 @@ module.exports = {
       '6': '6px',
       '8': '8px',
     },
-    extend: {},
+    borderRadius: {
+      '4xl': '4.5rem'
+    },
+    extend: {
+      backgroundImage: theme => ({
+        'hero-image': "url('./assets/hero-1.png')",
+       }),
+      zIndex: {
+        '-10': '-10',
+       }
+    },
   },
   variants: {
     extend: {},

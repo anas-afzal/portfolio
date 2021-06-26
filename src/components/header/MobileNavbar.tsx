@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { gsap } from 'gsap';
-import { useDispatch } from 'react-redux';
-import { toggleOff } from '../../store/actions';
 
 const MobileNavbar : React.FC = () => {
     
@@ -10,27 +8,23 @@ const MobileNavbar : React.FC = () => {
         {name: "Projects", link: "#"},
         {name: "Contact", link: "#"}
     ]
-    const dispatch = useDispatch();
+
+    const menuMouseHover = () => {
+        gsap.to(".nav-link-1", {color: "blue"})
+    }
 
     useEffect(() => {
-        gsap.from(".mobileNav", {x:-500, duration: 0.5})
+        gsap.timeline()
+        .from(".mobile-nav", {opacity:0, x:"-100%", duration: 0.5, autoAlpha:0})
+        .from(".nav-link", {opacity:0, x:"-100%", stagger: 0.1, duration: 0.3},"<")
     },[])
-    
-    const closeMenu = () => {
-        gsap.to(".mobileNav", {x:-500, duration: 0.5, onComplete: menuToggle})
-    }
 
-    const menuToggle = () => {
-        dispatch(toggleOff());
-    }
-
-    return (
-        <div className = "flex flex-col w-screen h-screen bg-gray-700 absolute mobileNav sm:hidden">
-            <button className = "text-white mr-auto ml-3 mt-2 text-2xl font-extralight" onClick = {closeMenu}>Close</button>
-            <div className = "flex flex-col mx-auto my-auto space-y-10">
-                {
-                    menuLink.map((items) => (
-                        <a key = {items.name} href = {items.link} className = "text-white text-4xl font-extralight">{items.name}</a>
+    return ( 
+        <div className = "flex flex-col bg-gray-200 absolute z-40 w-screen h-screen mobile-nav invisible overflow-hidden">
+            <div className = "flex flex-col ml-20 my-auto space-y-10 max-w-min">
+                {               
+                    menuLink.map((items, i) => (
+                        <a key = {items.name} href = {items.link} onMouseEnter = {menuMouseHover} className = {"nav-link text-black text-4xl font-light nav-link-"+ (i+1)}>{items.name}</a>
                     ))
                 }
             </div>              
